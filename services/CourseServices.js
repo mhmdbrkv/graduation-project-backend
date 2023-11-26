@@ -1,6 +1,6 @@
 const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
-const CourseModel = require("../Models/CourseModel");
+const CourseModel = require("../Models/courseModel");
 
 // get all courses
 // api/v1/courses
