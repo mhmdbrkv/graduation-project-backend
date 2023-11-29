@@ -1,20 +1,23 @@
 const mongoose = require("mongoose");
 
 //create schema
-const cousreSchema = new mongoose.Schema(
+
+const Schema = mongoose.Schema;
+
+const cousreSchema = new Schema(
   {
     title: {
       type: String,
       require: [true, "Course title Must Be Required"],
       unique: [true, "Course title Must Be unique"],
       minLength: [12, "Too Short"],
-      maxlength: [32, "Too Long"],
+      maxlength: [500, "Too Long"],
     },
-    prief: {
+    priefDesc: {
       type: String,
       require: [true, "Course prief Must Be Required"],
       minLength: [12, "Too Short"],
-      maxlength: [32, "Too Long"],
+      maxlength: [1000, "Too Long"],
     },
     description: {
       type: String,
@@ -28,6 +31,10 @@ const cousreSchema = new mongoose.Schema(
     totalHours: {
       type: Number,
       require: [true, "Course total hours Must Be Required"],
+    },
+    category: {
+      type: Schema.ObjectId,
+      require: [true, "Category required"],
     },
     learningGoals: {
       type: Array,
@@ -45,8 +52,8 @@ const cousreSchema = new mongoose.Schema(
       type: String,
       require: [true, "Course instructor Must Be Required"],
     },
-    language: {
-      type: String,
+    languages: {
+      type: Array,
       require: [true, "Course Language Must Be Required"],
     },
     price: {
@@ -66,7 +73,6 @@ const cousreSchema = new mongoose.Schema(
       type: Array,
       require: [true, "Course Content Must Be Required"],
     },
-
     Requirements: {
       type: Array,
       require: [true, "Course Requirements Must Be Required"],
@@ -74,7 +80,7 @@ const cousreSchema = new mongoose.Schema(
     reviews: {
       type: Array,
     },
-    metaData: {
+    sideMeta: {
       type: Array,
       require: [true, "Course metaData Must Be Required"],
     },

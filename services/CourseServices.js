@@ -29,9 +29,8 @@ exports.getCourse = asyncHandler(async (req, res) => {
 // api/v1/courses
 // private (admin only)
 exports.createCourse = asyncHandler(async (req, res) => {
-  const name = req.body.name;
-
-  const course = await CourseModel.create({ name, slug: slugify(name) });
+  req.body.slug = slugify(req.body.title);
+  const course = await CourseModel.create(req.body);
   res.status(201).json({ data: course });
 });
 

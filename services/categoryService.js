@@ -31,8 +31,8 @@ exports.getCategory = asyncHandler(async (req, res) => {
 // @route   POST  /api/v1/categories
 // @access  Private
 exports.createCategory = asyncHandler(async (req, res) => {
-  const name = req.body.name;
-  const category = await Category.create({ name, slug: slugify(name) });
+  req.body.slug = slugify(req.body.name);
+  const category = await CourseModel.create(req.body);
   res.status(201).json({ data: category });
 });
 
