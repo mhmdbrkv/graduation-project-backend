@@ -1,6 +1,8 @@
 const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
 const CourseModel = require("../Models/courseModel");
+const ApiError = require("../utils/apiError");
+const fs = require("fs");
 
 // get all courses
 // api/v1/courses
@@ -16,11 +18,11 @@ exports.getCourses = asyncHandler(async (req, res) => {
 // get specefic courses
 // api/v1/courses/:id
 // public
-exports.getCourse = asyncHandler(async (req, res) => {
+exports.getCourse = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
   const course = await CourseModel.findById(id);
   if (!course) {
-    res.status(404).json({ msg: `no course for this id ${id}` });
+    return next(new ApiError(`No course for this id ${id}`, 404));
   }
   res.status(201).json({ data: course });
 });
@@ -29,6 +31,28 @@ exports.getCourse = asyncHandler(async (req, res) => {
 // api/v1/courses
 // private (admin only)
 exports.createCourse = asyncHandler(async (req, res) => {
+  let desc = fs.readFileSync(
+    `assets/coursesDescription/${req.body.descFileName}.txt`,
+    "utf-8"
+  );
+  let goals = fs.readFileSync(
+    `assets/coursesLearningGoals/${req.body.learningGoalsFileName}.txt`,
+    "utf-8"
+  );
+
+  let requirements = fs.readFileSync(
+    `assets/coursesRequirements/${req.body.requirementsFileName}.txt`,
+    "utf-8"
+  );
+  let sideMeta = fs.readFileSync(
+    `assets/coursesSideMeta/${req.body.sideMetaFileName}.txt`,
+    "utf-8"
+  );
+
+  req.body.sideMeta = sideMeta;
+  req.body.requirements = requirements;
+  req.body.learningGoals = goals;
+  req.body.description = desc;
   req.body.slug = slugify(req.body.title);
   const course = await CourseModel.create(req.body);
   res.status(201).json({ data: course });
@@ -37,7 +61,7 @@ exports.createCourse = asyncHandler(async (req, res) => {
 // Update Course
 // api/v1/courses/:id
 // private (admin only)
-exports.updateCourse = asyncHandler(async (req, res) => {
+exports.updateCourse = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
   const name = req.body.name;
   const course = await CourseModel.findOneAndUpdate(
@@ -46,7 +70,7 @@ exports.updateCourse = asyncHandler(async (req, res) => {
     { new: true }
   );
   if (!course) {
-    res.status(404).json({ msg: `no course for this id ${id}` });
+    return next(new ApiError(`No course for this id ${id}`, 404));
   }
   res.status(201).json({ data: course });
 });
@@ -54,11 +78,11 @@ exports.updateCourse = asyncHandler(async (req, res) => {
 // delete Course
 // api/v1/courses/:id
 // private (admin only)
-exports.deleteCourse = asyncHandler(async (req, res) => {
+exports.deleteCourse = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
   const course = await CourseModel.findByIdAndDelete(id);
   if (!course) {
-    res.status(404).json({ msg: `no course for this id ${id}` });
+    return next(new ApiError(`No course for this id ${id}`, 404));
   }
   res.status(201).json({ msg: `deleted course for this id ${id}` });
 });

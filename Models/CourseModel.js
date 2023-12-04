@@ -11,24 +11,23 @@ const cousreSchema = new Schema(
       require: [true, "Course title Must Be Required"],
       unique: [true, "Course title Must Be unique"],
       minLength: [12, "Too Short"],
-      maxlength: [500, "Too Long"],
+      maxlength: [150, "Too Long"],
     },
     priefDesc: {
       type: String,
       require: [true, "Course prief Must Be Required"],
-      minLength: [12, "Too Short"],
-      maxlength: [1000, "Too Long"],
+      minLength: [32, "Too Short"],
+      maxlength: [500, "Too Long"],
     },
+
     description: {
       type: String,
-      require: [true, "Course Description Must Be Required"],
-      minLength: [12, "Too Short"],
     },
     slug: {
       type: String,
       lowercase: true,
     },
-    totalHours: {
+    duration: {
       type: Number,
       require: [true, "Course total hours Must Be Required"],
     },
@@ -36,17 +35,15 @@ const cousreSchema = new Schema(
       type: Schema.ObjectId,
       require: [true, "Category required"],
     },
+
     learningGoals: {
-      type: Array,
-      require: [true, "Course target Be Required"],
+      type: String,
     },
     enrolledNum: {
       type: Number,
-      require: [true, "Course enrolled numbers Must Be Required"],
     },
-    rating: {
+    ratingNum: {
       type: Number,
-      require: [true, "Course rating Must Be Required"],
     },
     instructor: {
       type: String,
@@ -64,6 +61,7 @@ const cousreSchema = new Schema(
       type: Number,
       default: 0,
     },
+
     thmubnail: {
       type: String,
       require: [true, "Course thmubnail Must Be Required"],
@@ -73,15 +71,37 @@ const cousreSchema = new Schema(
       type: Array,
       require: [true, "Course Content Must Be Required"],
     },
-    Requirements: {
-      type: Array,
-      require: [true, "Course Requirements Must Be Required"],
+
+    requirements: {
+      type: String,
     },
     reviews: {
-      type: Array,
+      type: Object,
     },
+
     sideMeta: {
-      type: Array,
+      type: String,
+    },
+    
+    //file names
+    descFileName: {
+      type: String,
+      require: [true, "Course Description FileName Must Be Required"],
+      unique: [true, "Course Description FileName Must Be unique"],
+    },
+
+    learningGoalsFileName: {
+      type: String,
+      require: [true, "Course LearningGoals FileName Required"],
+      unique: [true, "Course LearningGoals FileName Must Be unique"],
+    },
+
+    requirementsFileName: {
+      type: String,
+      require: [true, "Course Requirements Required"],
+    },
+    sideMetaFileName: {
+      type: String,
       require: [true, "Course metaData Must Be Required"],
     },
   },

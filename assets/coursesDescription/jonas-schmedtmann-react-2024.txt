@@ -1,0 +1,112 @@
+Description
+** Just launched in June 2023!
+
+** Take this course after taking my #1 bestselling JavaScript course (850,000+ students)
+
+
+
+In 2023, React is still the #1 skill to learn if you want to become a successful front-end developer!
+
+But it can be hard. There are so many moving parts, so many different libraries, so many tutorials out there.
+
+That's why you came here... And you came to the right place! This is THE ultimate React course for 2024 and beyond.
+
+A practice-heavy approach to master React by building polished apps, backed up by diagrams, theory, and looks under the hood of React.
+
+The all-in-one package that takes you from zero to truly understanding React and building modern, powerful, and professional web applications.
+
+Real projects. Real explanations. Real React.
+
+
+
+[01] Why is this the right React course for you?
+
+This is the most in-depth React course on Udemy, and it's fundamentally different from all the other ones.
+
+Here's why:
+
+Contains the biggest and most professional project, where we implement many common app features (see promo video!)
+
+Super detailed explanations of all important concepts with carefully crafted and animated diagrams
+
+A huge focus on "how to think in React" and modern best practices
+
+A long section that explores how React actually works behind the scenes will give you the confidence to use React effectively on your own
+
+Advanced design patterns like compound components will make you think like a senior React engineer
+
+And these are just the highlights! Check out the full list below (+ the promo video and curriculum).
+
+Also, make no mistake: "React course" actually means "Front-end development with React and modern libraries course".
+
+That's right, besides the React library itself, you will learn and master them all: React Router, Redux, Redux Toolkit, React Query, React Hook Form, Styled Components, Tailwind CSS, and more.
+
+This is how we plan, build, and deploy professional projects! We even use industry-standard tools such as Supabase (fully-fledged back-end), GitHub, Netlify, and Vercel.
+
+As you expect, this course is 100% project-based. So throughout the course, you'll start building your portfolio of 8+ beautiful and high-quality React apps, where each one will showcase a few of the new skills you will be learning.
+
+By the end of the course, you will have all the knowledge and confidence that you need to ace your job interviews and become the professional React developer that companies are looking for.
+
+
+
+[02] Why am I the right React teacher for you?
+
+My name is Jonas, I'm an experienced web developer and designer, and one of Udemy's top instructors. I've been teaching web development courses since 2015 to over 1,800,000 developers, so I know exactly how students learn and what is needed to master any subject.
+
+With this in mind, I designed the ideal curriculum for this course: a unique blend of real-world projects, deep explanations, and theory lectures, to turn you into a confident React developer in just a couple of weeks.
+
+
+
+Ready to become a confident and independent React developer, highly capable of building your own apps? Then don't wait any longer, and start your React journey today!
+
+
+
+[03] Still not sure? Here are all the nerdy details of what we'll cover:
+
+React fundamentals [why we even need React, components, JSX, props, events, forms, state, props vs. state]
+
+How to think about state [where to place state, guidelines, lifting state up, local vs. global state, UI vs. remote state]
+
+How to think about components [how to split components, props as API, how to build reusable and composable components, the children prop]
+
+Deep dive into effects and useEffect [data fetching, lifecycle vs. synchronization, when to use effects, effects vs. event handlers]
+
+Deep dive into hooks [rules of hooks, how hooks work, useRef, building super-reusable custom hooks]
+
+Performance optimization [wasted renders, memoization with memo, useMemo, and useCallback, optimizing Context API, code splitting + Suspense]
+
+Advanced state management [useReducer hook, the Context API, Redux, Redux Toolkit, Thunks, React Query]
+
+Building Single-Page Applications (SPA) [Vite, routing with React Router, URL parameters and query strings for state management, data loaders and actions (v6.4+)]
+
+Building real-world features found in many apps [authentication and authorization, data sorting, filtering and pagination, dark mode, dashboard with charts, etc.]
+
+Creating your own back-end with a DB and API using Supabase [gain the power to build full-stack apps on your own!]
+
+How to style React apps [Tailwind CSS, CSS Modules, and Styled Components]
+
+Advanced React patterns used by senior developers [render props, higher-order components, compound components (to build a modal, a context menu, and more)]
+
+How React works behind the scenes [rendering, virtual DOM, reconciliation, fiber tree, key prop, events, state batching, etc.]
+
+
+
+[04] By signing up today, you'll also get:
+
+Up-to-date HD-quality videos, that are easy to search and reference (great for Udemy Business learners)
+
+Downloadable slides PDF for 60+ theory videos (not boring, I promise!)
+
+Professional English captions (not auto-generated)
+
+Downloadable assets and starter and final code for each project
+
+Free and fast support in the course Q&A
+
+10+ challenges and exercises to practice your skills (solutions included)
+
+Who this course is for:
+You just finished learning JavaScript and are looking for your next step!
+You want to truly master React development, including common libraries needed to build real-world apps: React Router, Redux, React Query, React Hooks Form, and many others
+You have been learning React, but 1) still don't understand React, or 2) still don't feel confident to build professional React apps
+You have been building React apps, but are still missing the advanced stuff: useReducer, performance optimization, how React actually works, advanced design patterns, etc.
