@@ -13,18 +13,26 @@ exports.createCousreValidator = [
     .not()
     .isNumeric()
     .withMessage("Invalid course title format")
-    .isLength({ min: 12, max: 150 })
-    .withMessage("course title length must be between 12 and 150 characters"),
+    .isLength({ min: 12, max: 60 })
+    .withMessage("course title length must be between 12 and 150 words"),
 
-  check("priefDesc")
+  check("subtitle")
     .notEmpty()
-    .withMessage("Course prief Required")
-    .isLength({ min: 32, max: 500 })
-    .withMessage("Course prief length must be between 50 and 500 characters"),
+    .withMessage("Course subtitle Required")
+    .isLength({ min: 12, max: 120 })
+    .withMessage("Course subtitle length must be between 50 and 500 words"),
 
-  check("descFileName")
+  check("category")
     .notEmpty()
-    .withMessage("description File Name Required"),
+    .withMessage("Category id Required")
+    .isMongoId()
+    .withMessage("Invalid category id format"),
+
+  check("subCategory")
+    .notEmpty()
+    .withMessage("subCategory id Required")
+    .isMongoId()
+    .withMessage("Invalid subCategory id format"),
 
   check("duration")
     .notEmpty()
@@ -32,22 +40,17 @@ exports.createCousreValidator = [
     .isNumeric()
     .withMessage("Invalid course duration format"),
 
-  check("learningGoalsFileName")
-    .notEmpty()
-    .withMessage("learning Goals FileName required"),
-
   check("instructor")
     .notEmpty()
-    .withMessage("instructor Name required")
-    .not()
-    .isNumeric()
-    .withMessage("Invalid instructor name format"),
+    .withMessage("instructor id required")
+    .isMongoId()
+    .withMessage("Invalid instructor id format"),
 
   check("languages")
     .notEmpty()
     .withMessage("languages required")
     .isArray()
-    .withMessage("Insert languages as array"),
+    .withMessage("Languages required as Array"),
 
   check("price")
     .notEmpty()
@@ -62,13 +65,42 @@ exports.createCousreValidator = [
     .withMessage("invalid discount percentage format"),
 
   check("thmubnail").notEmpty().withMessage("thmubnail required"),
-  check("content").notEmpty().withMessage("content required"),
-  check("requirementsFileName")
+
+  check("content")
     .notEmpty()
-    .withMessage("Requirements File Name required"),
-  check("sideMetaFileName")
+    .withMessage("content required")
+    .isObject()
+    .withMessage("Course content required as Object"),
+
+  check("learningGoals")
     .notEmpty()
-    .withMessage("side meta File Name required"),
+    .withMessage("learning goals required")
+    .isArray()
+    .withMessage("Course learning goals required as Array"),
+
+  check("requirements")
+    .notEmpty()
+    .withMessage("requirements required")
+    .isArray()
+    .withMessage("Course requirements required as Array"),
+
+  check("audience")
+    .notEmpty()
+    .withMessage("audience required")
+    .isArray()
+    .withMessage("Course audience required as Array"),
+
+  check("description")
+    .notEmpty()
+    .withMessage("description required")
+    .isLength({ min: 200 })
+    .withMessage("Course description length must be 200 words minimum"),
+
+  check("sideMeta")
+    .notEmpty()
+    .withMessage("side meta data required")
+    .isObject()
+    .withMessage("Course side meta data required as Object"),
   validatorMiddleware,
 ];
 

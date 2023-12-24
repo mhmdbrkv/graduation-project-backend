@@ -13,7 +13,7 @@ const {
   getCourse,
   deleteCourse,
   updateCourse,
-} = require("../services/courseServices");
+} = require("../services/courseService");
 
 const router = express.Router();
 
