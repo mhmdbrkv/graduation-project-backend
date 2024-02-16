@@ -13,19 +13,30 @@ const {
   createCategory,
   updateCategory,
   deleteCategory,
+  categoryImage,
+  imageProcessing,
 } = require("../services/categoryService");
 
 const router = express.Router();
 
+const subCategoryRoute = require("./subCategoryRoute");
+
+router.use("/:categoryId/subcategories", subCategoryRoute);
+
 router
   .route("/")
   .get(getCategories)
-  .post(createCategoryValidator, createCategory);
+  .post(
+    categoryImage,
+    imageProcessing,
+    createCategoryValidator,
+    createCategory
+  );
 
 router
   .route("/:id")
   .get(getCategoryValidator, getCategory)
-  .put(updateCategoryValidator, updateCategory)
+  .put(categoryImage, imageProcessing, updateCategoryValidator, updateCategory)
   .delete(deleteCategoryValidator, deleteCategory);
 
 module.exports = router;

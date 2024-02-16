@@ -17,12 +17,11 @@ dbConnection();
 
 //express app
 const app = express();
+app.use(express.static(path.join(__dirname, "uploads")));
 
 //middlewares
 app.use(express.json());
 app.use(morgan("dev"));
-
-app.use("/assets", express.static(path.join(__dirname, "/assets")));
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

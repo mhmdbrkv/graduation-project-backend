@@ -6,8 +6,8 @@ const cousreSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      require: [true, "Course title Must Be Required"],
       unique: [true, "Course title Must Be unique"],
+      require: [true, "Course title Required"],
       minLength: [12, "Too Short"],
       maxlength: [60, "Too Long"],
     },
@@ -41,39 +41,50 @@ const cousreSchema = new mongoose.Schema(
       require: [true, "Category id required"],
     },
 
-    subCategory: {
-      type: mongoose.Schema.ObjectId,
-      ref: "subCategory",
-      require: [true, "subCategory id required"],
-    },
+    subCategories: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "subCategory",
+      },
+    ],
 
     learningGoals: {
-      type: Array,
+      type: [String],
       require: [true, "learning Goals required"],
     },
 
-    enrolledNum: {
+    enrolledNumber: {
       type: Number,
+      require: true,
     },
 
-    ratingNum: {
+    ratingsNumber: {
       type: Number,
+      default: 0,
     },
 
-    instructor: {
-      type: mongoose.Schema.ObjectId,
-      ref: "Instructor",
-      require: [true, "Course instructor ID Must Be Required"],
+    ratingsAverage: {
+      type: Number,
+      min: [1, "Rating must be between 1.0 and 5.0"],
+      max: [5, "Rating must be between 1.0 and 5.0"],
     },
+
+    // instructor: {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: "Instructor",
+    //   require: [true, "Course instructor ID Must Be Required"],
+    // },
 
     languages: {
-      type: Array,
+      type: [String],
       require: [true, "Course Language Must Be Required"],
     },
 
     price: {
       type: Number,
       default: 0,
+      trim: true,
+      require: [true, "Course price required"],
     },
 
     discountPercentage: {
@@ -83,39 +94,81 @@ const cousreSchema = new mongoose.Schema(
 
     thmubnail: {
       type: String,
-      require: [true, "Course thmubnail Must Be Required"],
-      unique: [true, "Course thmubnail Must Be unique"],
+      require: [true, "Course thmubnail required"],
     },
 
-    content: {
-      type: Object,
-      require: [true, "Course Content Must Be Required"],
-    },
+    content: [
+      {
+        name: {
+          type: String,
+          require: [true, "Content lesson's name is required"],
+          unique: [true, "lesson name Must Be unique"],
+          minLength: [6, "Too Short name"],
+          maxlength: [32, "Too Long name"],
+        },
+
+        duration: {
+          type: Number,
+        },
+
+        link: {
+          type: String,
+          require: [true, "Lesson link is required"],
+        },
+      },
+    ],
 
     requirements: {
-      type: Array,
+      type: [String],
       require: [true, "requirements required"],
     },
 
     audience: {
-      type: Array,
+      type: [String],
       require: [true, "Audience required"],
     },
 
-    reviews: {
-      type: Object,
-      require: [true, "Course reviews Required"],
-    },
+    // reviews: [
+    //   {
+    //     user: {
+    //       type: mongoose.Schema.ObjectId,
+    //       ref: "User",
+    //       require: true,
+    //     },
+
+    //     content: {
+    //       type: String,
+    //     },
+
+    //     createdAt: {
+    //       type: Date,
+    //       default: Date.now(),
+    //     },
+    //   },
+    // ],
 
     sideMeta: {
-      type: Object,
+      type: [String],
       require: [true, "Course metaData Required"],
     },
   },
 
   { timestamps: true }
 );
-//create Model
-const Course = mongoose.model("Course", cousreSchema);
 
-module.exports = Course;
+// mongoose query middleware
+cousreSchema.pre(/^find/, function (next) {
+  this.populate({ path: "category", select: "name -_id" });
+  next();
+});
+
+// return thmubnail url with the response
+cousreSchema.post("init", (doc) => {
+  if (doc.thmubnail) {
+    const thmubnailUrl = `${process.env.BASE_URL}/courses/${doc.thmubnail}`;
+    doc.thmubnail = thmubnailUrl;
+  }
+});
+
+//create Model
+module.exports = mongoose.model("Course", cousreSchema);

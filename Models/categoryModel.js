@@ -24,4 +24,12 @@ const categorySchema = new mongoose.Schema(
 // 2- Create model
 const Category = mongoose.model("Category", categorySchema);
 
+// // mongoose query middleware: return image url with the response
+// categorySchema.post("init", (doc) => {
+//   if (doc.image) {
+//     const imageUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
+//     doc.image = imageUrl;
+//   }
+// });
+
 module.exports = Category;

@@ -13,15 +13,20 @@ const {
   getCourse,
   deleteCourse,
   updateCourse,
+  courseThumb,
+  imageProcessing,
 } = require("../services/courseService");
 
 const router = express.Router();
 
-router.route("/").post(createCousreValidator, createCourse).get(getCourses);
+router
+  .route("/")
+  .post(courseThumb, imageProcessing, createCousreValidator, createCourse)
+  .get(getCourses);
 router
   .route("/:id")
   .get(getCousreValidator, getCourse)
-  .put(updateCousreValidator, updateCourse)
+  .put(courseThumb, imageProcessing, updateCousreValidator, updateCourse)
   .delete(deleteCousreValidator, deleteCourse);
 
 module.exports = router;
