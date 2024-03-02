@@ -17,6 +17,8 @@ const {
   imageProcessing,
 } = require("../services/categoryService");
 
+const authServices = require("../services/authService");
+
 const router = express.Router();
 
 const subCategoryRoute = require("./subCategoryRoute");
@@ -27,6 +29,8 @@ router
   .route("/")
   .get(getCategories)
   .post(
+    authServices.protect,
+    authServices.allowedTo("instructor", "admin"),
     categoryImage,
     imageProcessing,
     createCategoryValidator,
@@ -36,7 +40,19 @@ router
 router
   .route("/:id")
   .get(getCategoryValidator, getCategory)
-  .put(categoryImage, imageProcessing, updateCategoryValidator, updateCategory)
-  .delete(deleteCategoryValidator, deleteCategory);
+  .put(
+    authServices.protect,
+    authServices.allowedTo("instructor", "admin"),
+    categoryImage,
+    imageProcessing,
+    updateCategoryValidator,
+    updateCategory
+  )
+  .delete(
+    authServices.protect,
+    authServices.allowedTo("instructor", "admin"),
+    deleteCategoryValidator,
+    deleteCategory
+  );
 
 module.exports = router;

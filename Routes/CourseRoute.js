@@ -17,16 +17,37 @@ const {
   imageProcessing,
 } = require("../services/courseService");
 
+const authServices = require("../services/authService");
+
 const router = express.Router();
 
 router
   .route("/")
-  .post(courseThumb, imageProcessing, createCousreValidator, createCourse)
+  .post(
+    authServices.protect,
+    authServices.allowedTo("instructor", "admin"),
+    courseThumb,
+    imageProcessing,
+    createCousreValidator,
+    createCourse
+  )
   .get(getCourses);
 router
   .route("/:id")
   .get(getCousreValidator, getCourse)
-  .put(courseThumb, imageProcessing, updateCousreValidator, updateCourse)
-  .delete(deleteCousreValidator, deleteCourse);
+  .put(
+    authServices.protect,
+    authServices.allowedTo("instructor", "admin"),
+    courseThumb,
+    imageProcessing,
+    updateCousreValidator,
+    updateCourse
+  )
+  .delete(
+    authServices.protect,
+    authServices.allowedTo("instructor", "admin"),
+    deleteCousreValidator,
+    deleteCourse
+  );
 
 module.exports = router;

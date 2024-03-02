@@ -1,7 +1,5 @@
 const express = require("express");
 
-const router = express.Router({ mergeParams: true });
-
 const {
   createSubCategory,
   getSubCategories,
@@ -19,15 +17,35 @@ const {
   deleteSubCategoryValidator,
 } = require("../utils/validators/subCategoryValidator");
 
+const authServices = require("../services/authService");
+
+const router = express.Router({ mergeParams: true });
+
 router
   .route("/")
-  .post(setCategoryId, createSubCategoryValidator, createSubCategory)
+  .post(
+    authServices.protect,
+    authServices.allowedTo("instructor", "admin"),
+    setCategoryId,
+    createSubCategoryValidator,
+    createSubCategory
+  )
   .get(filter, getSubCategories);
 
 router
   .route("/:id")
   .get(getSubCategoryValidator, getSubCategory)
-  .put(updateSubCategoryValidator, updateSubCategory)
-  .delete(deleteSubCategoryValidator, deleteSubCategory);
+  .put(
+    authServices.protect,
+    authServices.allowedTo("instructor", "admin"),
+    updateSubCategoryValidator,
+    updateSubCategory
+  )
+  .delete(
+    authServices.protect,
+    authServices.allowedTo("instructor", "admin"),
+    deleteSubCategoryValidator,
+    deleteSubCategory
+  );
 
 module.exports = router;

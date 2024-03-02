@@ -8,15 +8,15 @@ const Course = require("../Models/courseModel");
 exports.courseThumb = uploadSingleImage("thmubnail");
 
 exports.imageProcessing = asyncHandler(async (req, res, next) => {
-  const filename = `course-${uuidv4()}-${Date.now()}.jpeg`;
-
-  await sharp(req.file.buffer)
-    .resize(600, 600)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`uploads/courses/${filename}`);
-
-  req.body.thmubnail = filename;
+  if (req.file) {
+    const filename = `course-${uuidv4()}-${Date.now()}.jpeg`;
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .jpeg({ quality: 90 })
+      .toFile(`uploads/courses/${filename}`);
+    req.body.thmubnail = filename;
+  }
   next();
 });
 

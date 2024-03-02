@@ -8,15 +8,15 @@ const Category = require("../Models/categoryModel");
 exports.categoryImage = uploadSingleImage("image");
 
 exports.imageProcessing = asyncHandler(async (req, res, next) => {
-  const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
-
-  await sharp(req.file.buffer)
-    .resize(600, 600)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`uploads/categories/${filename}`);
-
-  req.body.image = filename;
+  if (req.file) {
+    const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .jpeg({ quality: 90 })
+      .toFile(`uploads/categories/${filename}`);
+    req.body.image = filename;
+  }
   next();
 });
 

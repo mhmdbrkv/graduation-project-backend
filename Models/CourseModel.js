@@ -55,7 +55,6 @@ const cousreSchema = new mongoose.Schema(
 
     enrolledNumber: {
       type: Number,
-      require: true,
     },
 
     ratingsNumber: {
@@ -69,11 +68,11 @@ const cousreSchema = new mongoose.Schema(
       max: [5, "Rating must be between 1.0 and 5.0"],
     },
 
-    // instructor: {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: "Instructor",
-    //   require: [true, "Course instructor ID Must Be Required"],
-    // },
+    instructor: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      require: [true, "Course instructor id Required"],
+    },
 
     languages: {
       type: [String],

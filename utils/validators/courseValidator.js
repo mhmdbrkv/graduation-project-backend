@@ -80,11 +80,11 @@ exports.createCousreValidator = [
     .isNumeric()
     .withMessage("Invalid course duration format"),
 
-  // check("instructor")
-  //   .notEmpty()
-  //   .withMessage("instructor id required")
-  //   .isMongoId()
-  //   .withMessage("Invalid instructor id format"),
+  check("instructor")
+    .notEmpty()
+    .withMessage("instructor id required")
+    .isMongoId()
+    .withMessage("Invalid instructor id format"),
 
   check("languages")
     .notEmpty()
@@ -175,14 +175,61 @@ exports.createCousreValidator = [
 exports.updateCousreValidator = [
   check("id").isMongoId().withMessage("invalid course id format"),
   check("title")
-    .not()
-    .isNumeric()
-    .withMessage("invalid title format")
     .optional()
+    .isString()
+    .withMessage("invalid title format")
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
       return true;
     }),
+  check("price")
+    .optional()
+    .notEmpty()
+    .withMessage("price required")
+    .isNumeric()
+    .withMessage("invalid price format")
+    .toFloat()
+    .custom((val, { req }) => {
+      req.body.price -= req.body.price * (req.body.discountPercentage / 100);
+      return true;
+    }),
+
+  check("discountPercentage")
+    .optional()
+    .notEmpty()
+    .withMessage("discountPercentage required")
+    .isNumeric()
+    .withMessage("invalid discount percentage format")
+    .toFloat()
+    .custom((value) => {
+      if (value < 0 || value > 100)
+        throw new Error("discountPercentage must be between 0 and 100");
+      return true;
+    }),
+
+  check("content")
+    .optional()
+    .notEmpty()
+    .withMessage("content required")
+    .isArray()
+    .withMessage("Course content required as array of objects")
+
+    .custom((value, { req }) => {
+      if (typeof value[0].name !== "string" || value[0].name.length === 0) {
+        throw new Error(
+          "Each lesson should have a name property that is not empty."
+        );
+      }
+
+      if (typeof value[0].link !== "string" || value[0].link.length === 0) {
+        throw new Error(
+          "Each lesson should have a link property that is not empty."
+        );
+      }
+
+      return true;
+    }),
+
   validatorMiddleware,
 ];
 
