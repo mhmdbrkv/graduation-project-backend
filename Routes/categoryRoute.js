@@ -23,14 +23,21 @@ const router = express.Router();
 
 const subCategoryRoute = require("./subCategoryRoute");
 
+//Nested Route
 router.use("/:categoryId/subcategories", subCategoryRoute);
+
+router.get("/", getCategories);
+router.get("/:id", getCategoryValidator, getCategory);
+
+router.use(
+  authServices.protect,
+  authServices.isActive,
+  authServices.allowedTo("instructor", "admin")
+);
 
 router
   .route("/")
-  .get(getCategories)
   .post(
-    authServices.protect,
-    authServices.allowedTo("instructor", "admin"),
     categoryImage,
     imageProcessing,
     createCategoryValidator,
@@ -39,20 +46,7 @@ router
 
 router
   .route("/:id")
-  .get(getCategoryValidator, getCategory)
-  .put(
-    authServices.protect,
-    authServices.allowedTo("instructor", "admin"),
-    categoryImage,
-    imageProcessing,
-    updateCategoryValidator,
-    updateCategory
-  )
-  .delete(
-    authServices.protect,
-    authServices.allowedTo("instructor", "admin"),
-    deleteCategoryValidator,
-    deleteCategory
-  );
+  .put(categoryImage, imageProcessing, updateCategoryValidator, updateCategory)
+  .delete(deleteCategoryValidator, deleteCategory);
 
 module.exports = router;

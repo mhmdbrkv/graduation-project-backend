@@ -152,11 +152,11 @@ exports.createCousreValidator = [
     .isArray()
     .withMessage("Course requirements required as Array"),
 
-  check("audience")
+  check("level")
     .notEmpty()
-    .withMessage("audience required")
-    .isArray()
-    .withMessage("Course audience required as Array"),
+    .withMessage("level required")
+    .isString()
+    .withMessage("Course level required as string"),
 
   check("description")
     .notEmpty()

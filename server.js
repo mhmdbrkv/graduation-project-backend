@@ -13,6 +13,8 @@ const categoryRoute = require("./Routes/categoryRoute");
 const subCategoryRoute = require("./Routes/subCategoryRoute");
 const userRoute = require("./Routes/userRoute");
 const authRoute = require("./Routes/authRoute");
+const reviewRoute = require("./Routes/reviewRoute");
+const wishlistRoute = require("./Routes/wishlistRoute");
 
 //database connection
 dbConnection();
@@ -36,6 +38,8 @@ app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/subcategories", subCategoryRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/reviews", reviewRoute);
+app.use("/api/v1/wishlist", wishlistRoute);
 
 app.all("*", (req, res, next) => {
   next(new ApiError(`There is no such route: ${req.originalUrl}`, 400));

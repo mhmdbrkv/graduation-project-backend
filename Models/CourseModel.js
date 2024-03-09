@@ -62,10 +62,9 @@ const cousreSchema = new mongoose.Schema(
       default: 0,
     },
 
-    ratingsAverage: {
+    avgRatings: {
       type: Number,
-      min: [1, "Rating must be between 1.0 and 5.0"],
-      max: [5, "Rating must be between 1.0 and 5.0"],
+      default: 0,
     },
 
     instructor: {
@@ -122,29 +121,10 @@ const cousreSchema = new mongoose.Schema(
       require: [true, "requirements required"],
     },
 
-    audience: {
-      type: [String],
+    level: {
+      type: String,
       require: [true, "Audience required"],
     },
-
-    // reviews: [
-    //   {
-    //     user: {
-    //       type: mongoose.Schema.ObjectId,
-    //       ref: "User",
-    //       require: true,
-    //     },
-
-    //     content: {
-    //       type: String,
-    //     },
-
-    //     createdAt: {
-    //       type: Date,
-    //       default: Date.now(),
-    //     },
-    //   },
-    // ],
 
     sideMeta: {
       type: [String],
@@ -152,10 +132,17 @@ const cousreSchema = new mongoose.Schema(
     },
   },
 
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-// mongoose query middleware
+// Virtual property for getting the reviews of the course with the response
+cousreSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "course",
+  localField: "_id",
+});
+
+// mongoose query middleware for population
 cousreSchema.pre(/^find/, function (next) {
   this.populate({ path: "category", select: "name -_id" });
   next();

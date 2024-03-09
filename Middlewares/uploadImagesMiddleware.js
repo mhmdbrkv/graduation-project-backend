@@ -2,17 +2,6 @@ const multer = require("multer");
 const ApiError = require("../utils/apiError");
 
 exports.uploadSingleImage = (fieldName) => {
-  // const multerStorage = multer.diskStorage({
-  //   destination: function (req, file, cb) {
-  //     cb(null, "uploads/categories");
-  //   },
-  //   filename: function (req, file, cb) {
-  //     const ext = file.mimetype.split("/")[1];
-  //     const filename = `category-${uuidv4()}-${Date.now()}.${ext}`;
-  //     cb(null, filename);
-  //   },
-  // });
-
   const multerStorage = multer.memoryStorage();
 
   const fileFilter = function (req, file, cb) {

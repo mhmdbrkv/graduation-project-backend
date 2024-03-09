@@ -4,6 +4,7 @@ const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 const { uploadSingleImage } = require("../Middlewares/uploadImagesMiddleware");
 const ApiError = require("../utils/apiError");
+const generateToken = require("../utils/generateToken");
 const handler = require("./handlersFactory");
 const User = require("../Models/userModel");
 
@@ -23,6 +24,8 @@ exports.imageProcessing = asyncHandler(async (req, res, next) => {
 
   next();
 });
+
+// Admin
 
 // @desc    Create user
 // @route   POST  /api/v1/users
@@ -89,5 +92,63 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
   if (!document) {
     return next(new ApiError(`No document for this id ${req.params.id}`, 404));
   }
-  res.status(201).json({ data: document });
+  res.status(200).json({ data: document });
+});
+
+// Logged User
+
+// @desc    Get logged user data
+// @route   GET  /api/v1/users/get-me
+// @access  Private/Protect
+exports.getLoggedUser = asyncHandler(async (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
+});
+
+// @desc    Change logged user password
+// @route   PUT /api/v1/users/change-my-password
+// @access  Private/Protect
+exports.changeLoggedUserPassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      password: await bcrypt.hash(req.body.password, 11),
+      passChangedAt: Date.now(),
+    },
+    {
+      new: true,
+    }
+  );
+  const token = generateToken(user._id);
+  res.status(200).json({ data: user, token: token });
+});
+
+exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      profileImage: req.body.profileImage,
+      headline: req.body.headline,
+      biography: req.body.biography,
+      social: req.body.social,
+    },
+    {
+      new: true,
+    }
+  );
+
+  res.status(200).json({ data: user });
+});
+
+exports.deActivateLoggedUser = asyncHandler(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user._id, { isActive: false });
+  res.status(204).send();
+});
+
+exports.activateLoggedUser = asyncHandler(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user._id, { isActive: true });
+  res.status(200).send();
 });

@@ -28,7 +28,7 @@ exports.getCourses = handler.gettAll(Course, "Course");
 // @desc    Get specific course by id
 // @route   GET /api/v1/courses/:id
 // @access  Public
-exports.getCourse = handler.getOne(Course);
+exports.getCourse = handler.getOne(Course, "reviews");
 
 // @desc    Create course
 // @route   POST  /api/v1/courses

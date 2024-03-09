@@ -14,7 +14,6 @@ const userSchema = mongoose.Schema(
       trim: true,
       minLength: [3, "User name must be at least 3 characters"],
     },
-
     email: {
       type: String,
       require: [true, "User email required"],
@@ -29,16 +28,6 @@ const userSchema = mongoose.Schema(
       minLength: [6, "User name must be at least 6 characters"],
     },
 
-    passChangedAt: Date,
-    passResetCode: String,
-    passResetCodeEat: Date,
-    passResetCodeVerified: Boolean,
-
-    role: {
-      type: String,
-      enum: ["user", "instructor", "admin"],
-      default: "user",
-    },
     myLearning: [
       {
         type: mongoose.Schema.ObjectId,
@@ -57,16 +46,23 @@ const userSchema = mongoose.Schema(
         ref: "Course",
       },
     ],
-    isActive: { type: Boolean, default: true },
 
     headline: {
       type: String,
       maxlength: [60, "Headline must be less than 60 characters"],
     },
-    biography: {
-      type: String,
-    },
+    biography: String,
     social: [String],
+    role: {
+      type: String,
+      enum: ["user", "instructor", "admin"],
+      default: "user",
+    },
+    isActive: { type: Boolean, default: true },
+    passChangedAt: Date,
+    passResetCode: String,
+    passResetCodeEat: Date,
+    passResetCodeVerified: Boolean,
   },
   { timestamps: true }
 );

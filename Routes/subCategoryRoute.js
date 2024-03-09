@@ -21,31 +21,22 @@ const authServices = require("../services/authService");
 
 const router = express.Router({ mergeParams: true });
 
+router.get("/", filter, getSubCategories);
+router.get("/:id", getSubCategoryValidator, getSubCategory);
+
+router.use(
+  authServices.protect,
+  authServices.isActive,
+  authServices.allowedTo("instructor", "admin")
+);
+
 router
   .route("/")
-  .post(
-    authServices.protect,
-    authServices.allowedTo("instructor", "admin"),
-    setCategoryId,
-    createSubCategoryValidator,
-    createSubCategory
-  )
-  .get(filter, getSubCategories);
+  .post(setCategoryId, createSubCategoryValidator, createSubCategory);
 
 router
   .route("/:id")
-  .get(getSubCategoryValidator, getSubCategory)
-  .put(
-    authServices.protect,
-    authServices.allowedTo("instructor", "admin"),
-    updateSubCategoryValidator,
-    updateSubCategory
-  )
-  .delete(
-    authServices.protect,
-    authServices.allowedTo("instructor", "admin"),
-    deleteSubCategoryValidator,
-    deleteSubCategory
-  );
+  .put(updateSubCategoryValidator, updateSubCategory)
+  .delete(deleteSubCategoryValidator, deleteSubCategory);
 
 module.exports = router;

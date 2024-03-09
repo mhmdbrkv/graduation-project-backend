@@ -17,37 +17,30 @@ const {
   imageProcessing,
 } = require("../services/courseService");
 
+const reviewRoute = require("./reviewRoute");
 const authServices = require("../services/authService");
 
 const router = express.Router();
 
+//Nested Route
+router.use("/:courseId/reviews", reviewRoute);
+
+router.get("/", getCourses);
+router.get("/:id", getCousreValidator, getCourse);
+
+router.use(
+  authServices.protect,
+  authServices.isActive,
+  authServices.allowedTo("instructor", "admin")
+);
+
 router
   .route("/")
-  .post(
-    authServices.protect,
-    authServices.allowedTo("instructor", "admin"),
-    courseThumb,
-    imageProcessing,
-    createCousreValidator,
-    createCourse
-  )
-  .get(getCourses);
+  .post(courseThumb, imageProcessing, createCousreValidator, createCourse);
+
 router
   .route("/:id")
-  .get(getCousreValidator, getCourse)
-  .put(
-    authServices.protect,
-    authServices.allowedTo("instructor", "admin"),
-    courseThumb,
-    imageProcessing,
-    updateCousreValidator,
-    updateCourse
-  )
-  .delete(
-    authServices.protect,
-    authServices.allowedTo("instructor", "admin"),
-    deleteCousreValidator,
-    deleteCourse
-  );
+  .put(courseThumb, imageProcessing, updateCousreValidator, updateCourse)
+  .delete(deleteCousreValidator, deleteCourse);
 
 module.exports = router;
