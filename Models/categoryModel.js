@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 // 1- Create Schema
-
 const categorySchema = new mongoose.Schema(
   {
     name: {

@@ -55,8 +55,8 @@ const userSchema = mongoose.Schema(
     social: [String],
     role: {
       type: String,
-      enum: ["user", "instructor", "admin"],
-      default: "user",
+      enum: ["student", "instructor"],
+      default: "student",
     },
     isActive: { type: Boolean, default: true },
     passChangedAt: Date,

@@ -3,6 +3,7 @@ const { check } = require("express-validator");
 const validatorMiddleware = require("../../Middlewares/validationMiddleware");
 const Category = require("../../Models/categoryModel");
 const SubCategory = require("../../Models/subCategoryModel");
+const User = require("../../Models/userModel");
 
 exports.getCousreValidator = [
   check("id").isMongoId().withMessage("invalid course id format"),
@@ -84,74 +85,27 @@ exports.createCousreValidator = [
     .notEmpty()
     .withMessage("instructor id required")
     .isMongoId()
-    .withMessage("Invalid instructor id format"),
+    .withMessage("Invalid instructor id format")
+    .custom(async (value, { req }) => {
+      const roles = ["instructor", "admin"];
+      const user = await User.findById(value);
+      if (!user || !roles.includes(user.role)) {
+        throw new Error(
+          "The inserted id of the instructor field does not belong to instructor or admin"
+        );
+      }
+    }),
 
-  check("languages")
-    .notEmpty()
-    .withMessage("languages required")
-    .isArray()
-    .withMessage("Languages required as Array"),
-
+  check("languages").notEmpty().withMessage("languages required"),
   check("price")
     .notEmpty()
     .withMessage("price required")
     .isNumeric()
     .withMessage("invalid price format")
-    .toFloat()
-    .custom((val, { req }) => {
-      req.body.price -= req.body.price * (req.body.discountPercentage / 100);
-      return true;
-    }),
+    .toFloat(),
 
-  check("discountPercentage")
-    .optional()
-    .notEmpty()
-    .withMessage("discountPercentage required")
-    .isNumeric()
-    .withMessage("invalid discount percentage format")
-    .toFloat()
-    .custom((value) => {
-      if (value < 0 || value > 100)
-        throw new Error("discountPercentage must be between 0 and 100");
-      return true;
-    }),
-
-  check("thmubnail").notEmpty().withMessage("thmubnail required"),
-
-  check("content")
-    .notEmpty()
-    .withMessage("content required")
-    .isArray()
-    .withMessage("Course content required as array of objects")
-
-    .custom((value, { req }) => {
-      if (typeof value[0].name !== "string" || value[0].name.length === 0) {
-        throw new Error(
-          "Each lesson should have a name property that is not empty."
-        );
-      }
-
-      if (typeof value[0].link !== "string" || value[0].link.length === 0) {
-        throw new Error(
-          "Each lesson should have a link property that is not empty."
-        );
-      }
-
-      return true;
-    }),
-
-  check("learningGoals")
-    .notEmpty()
-    .withMessage("learning goals required")
-    .isArray()
-    .withMessage("Course learning goals required as Array"),
-
-  check("requirements")
-    .notEmpty()
-    .withMessage("requirements required")
-    .isArray()
-    .withMessage("Course requirements required as Array"),
-
+  check("learningGoals").notEmpty().withMessage("learning goals required"),
+  check("requirements").notEmpty().withMessage("requirements required"),
   check("level")
     .notEmpty()
     .withMessage("level required")
@@ -165,8 +119,7 @@ exports.createCousreValidator = [
     .withMessage("Course description length must be 200 words minimum"),
 
   check("sideMeta")
-    .notEmpty()
-    .withMessage("side meta data required")
+    .optional()
     .isArray()
     .withMessage("Course side meta data required as array"),
   validatorMiddleware,
@@ -188,47 +141,14 @@ exports.updateCousreValidator = [
     .withMessage("price required")
     .isNumeric()
     .withMessage("invalid price format")
-    .toFloat()
-    .custom((val, { req }) => {
-      req.body.price -= req.body.price * (req.body.discountPercentage / 100);
-      return true;
-    }),
+    .toFloat(),
 
-  check("discountPercentage")
+  check("sections")
     .optional()
     .notEmpty()
-    .withMessage("discountPercentage required")
-    .isNumeric()
-    .withMessage("invalid discount percentage format")
-    .toFloat()
-    .custom((value) => {
-      if (value < 0 || value > 100)
-        throw new Error("discountPercentage must be between 0 and 100");
-      return true;
-    }),
-
-  check("content")
-    .optional()
-    .notEmpty()
-    .withMessage("content required")
+    .withMessage("sections required")
     .isArray()
-    .withMessage("Course content required as array of objects")
-
-    .custom((value, { req }) => {
-      if (typeof value[0].name !== "string" || value[0].name.length === 0) {
-        throw new Error(
-          "Each lesson should have a name property that is not empty."
-        );
-      }
-
-      if (typeof value[0].link !== "string" || value[0].link.length === 0) {
-        throw new Error(
-          "Each lesson should have a link property that is not empty."
-        );
-      }
-
-      return true;
-    }),
+    .withMessage("Course sections required as array of objects"),
 
   validatorMiddleware,
 ];

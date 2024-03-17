@@ -32,7 +32,7 @@ router.get("/:id", getCategoryValidator, getCategory);
 router.use(
   authServices.protect,
   authServices.isActive,
-  authServices.allowedTo("instructor", "admin")
+  authServices.allowedTo("instructor")
 );
 
 router

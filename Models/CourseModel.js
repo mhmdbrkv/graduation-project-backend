@@ -1,7 +1,27 @@
 const mongoose = require("mongoose");
 
-//create schema
+//create schema for course content
+const sectionSchema = new mongoose.Schema({
+  sectionName: {
+    type: String,
+    require: [true, "section's name required"],
+  },
+  lectures: [
+    {
+      lectureName: {
+        type: String,
+        require: [true, "lecture's name required"],
+      },
 
+      lectureUrl: {
+        type: String,
+        require: [true, "lecture's url required"],
+      },
+    },
+  ],
+});
+
+//create schema
 const cousreSchema = new mongoose.Schema(
   {
     title: {
@@ -53,8 +73,9 @@ const cousreSchema = new mongoose.Schema(
       require: [true, "learning Goals required"],
     },
 
-    enrolledNumber: {
+    enrolled: {
       type: Number,
+      default: 0,
     },
 
     ratingsNumber: {
@@ -75,7 +96,7 @@ const cousreSchema = new mongoose.Schema(
 
     languages: {
       type: [String],
-      require: [true, "Course Language Must Be Required"],
+      require: [true, "Course Language Required"],
     },
 
     price: {
@@ -85,36 +106,11 @@ const cousreSchema = new mongoose.Schema(
       require: [true, "Course price required"],
     },
 
-    discountPercentage: {
-      type: Number,
-      default: 0,
-    },
-
     thmubnail: {
       type: String,
-      require: [true, "Course thmubnail required"],
     },
 
-    content: [
-      {
-        name: {
-          type: String,
-          require: [true, "Content lesson's name is required"],
-          unique: [true, "lesson name Must Be unique"],
-          minLength: [6, "Too Short name"],
-          maxlength: [32, "Too Long name"],
-        },
-
-        duration: {
-          type: Number,
-        },
-
-        link: {
-          type: String,
-          require: [true, "Lesson link is required"],
-        },
-      },
-    ],
+    sections: [sectionSchema],
 
     requirements: {
       type: [String],
@@ -128,7 +124,6 @@ const cousreSchema = new mongoose.Schema(
 
     sideMeta: {
       type: [String],
-      require: [true, "Course metaData Required"],
     },
   },
 

@@ -3,9 +3,8 @@ const bcrypt = require("bcryptjs");
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 const { uploadSingleImage } = require("../Middlewares/uploadImagesMiddleware");
-const ApiError = require("../utils/apiError");
 const generateToken = require("../utils/generateToken");
-const handler = require("./handlersFactory");
+const ApiError = require("../utils/apiError");
 const User = require("../Models/userModel");
 
 exports.userProfImg = uploadSingleImage("profileImage");
@@ -25,84 +24,36 @@ exports.imageProcessing = asyncHandler(async (req, res, next) => {
   next();
 });
 
-// Admin
-
-// @desc    Create user
-// @route   POST  /api/v1/users
+// @desc    Get loggged user
+// @route   GET /api/v1/users/get-me
 // @access  Private
-exports.createUser = handler.createOne(User);
+exports.getUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).populate("myCourses");
 
-// @desc    Get specific user
-// @route   GET  /api/v1/users
-// @access  Private
-exports.getUser = handler.getOne(User);
-
-// @desc    Get list of users
-// @route   GET /api/v1/users
-// @access  Private
-exports.getUsers = handler.gettAll(User);
-
-// @desc    Update specific user
-// @route   PUT /api/v1/users/:id
-// @access  Private
-exports.updateUser = asyncHandler(async (req, res, next) => {
-  const document = await User.findByIdAndUpdate(
-    req.params.id,
-    {
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      email: req.body.email,
-      profileImage: req.body.profileImage,
-      role: req.body.role,
-    },
-    {
-      new: true,
-    }
-  );
-  if (!document) {
-    return next(new ApiError(`No document for this id ${req.params.id}`, 404));
+  if (!user) {
+    throw new ApiError(`No document with the id of ${req.params.id}`, 404);
   }
-  res.status(201).json({ data: document });
-});
 
-// @desc    Deactive specific user
-// @route   PUT /api/v1/users/:id
-// @access  Private
-exports.deActivateUser = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const user = await User.findByIdAndUpdate(
-    id,
-    { isActive: false },
-    { new: true }
-  );
-  res.status(204).json({ data: user });
-});
+  const data = {};
 
-exports.changePassword = asyncHandler(async (req, res, next) => {
-  const document = await User.findByIdAndUpdate(
-    req.params.id,
-    {
-      password: await bcrypt.hash(req.body.password, 11),
-      passChangedAt: Date.now(),
-    },
-    {
-      new: true,
-    }
-  );
-  if (!document) {
-    return next(new ApiError(`No document for this id ${req.params.id}`, 404));
+  if (user.role === "instructor") {
+    let numberOfStudents = 0;
+    let numberOfReviews = 0;
+
+    user.myCourses.forEach((course) => {
+      numberOfStudents += course.enrolled;
+      numberOfReviews += course.ratingsNumber;
+    });
+
+    data.numberOfStudents = numberOfStudents;
+    data.numberOfReviews = numberOfReviews;
   }
-  res.status(200).json({ data: document });
-});
 
-// Logged User
+  data.user = user;
 
-// @desc    Get logged user data
-// @route   GET  /api/v1/users/get-me
-// @access  Private/Protect
-exports.getLoggedUser = asyncHandler(async (req, res, next) => {
-  req.params.id = req.user._id;
-  next();
+  console.log(data);
+
+  res.status(200).json(data);
 });
 
 // @desc    Change logged user password
@@ -123,6 +74,9 @@ exports.changeLoggedUserPassword = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: user, token: token });
 });
 
+// @desc    Update loggged user data
+// @route   PUT /api/v1/users/get-me
+// @access  Private
 exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,

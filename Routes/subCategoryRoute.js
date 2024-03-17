@@ -27,7 +27,7 @@ router.get("/:id", getSubCategoryValidator, getSubCategory);
 router.use(
   authServices.protect,
   authServices.isActive,
-  authServices.allowedTo("instructor", "admin")
+  authServices.allowedTo("instructor")
 );
 
 router

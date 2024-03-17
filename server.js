@@ -8,13 +8,8 @@ dotenv.config({ path: "config.env" });
 const ApiError = require("./utils/apiError");
 const globalError = require("./Middlewares/errorMiddleware");
 const dbConnection = require("./config/database");
-const courseRoute = require("./Routes/courseRoute");
-const categoryRoute = require("./Routes/categoryRoute");
-const subCategoryRoute = require("./Routes/subCategoryRoute");
-const userRoute = require("./Routes/userRoute");
-const authRoute = require("./Routes/authRoute");
-const reviewRoute = require("./Routes/reviewRoute");
-const wishlistRoute = require("./Routes/wishlistRoute");
+
+const mountRoutes = require("./Routes");
 
 //database connection
 dbConnection();
@@ -33,13 +28,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 //router mount
-app.use("/api/v1/courses", courseRoute);
-app.use("/api/v1/categories", categoryRoute);
-app.use("/api/v1/subcategories", subCategoryRoute);
-app.use("/api/v1/users", userRoute);
-app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/reviews", reviewRoute);
-app.use("/api/v1/wishlist", wishlistRoute);
+mountRoutes(app);
 
 app.all("*", (req, res, next) => {
   next(new ApiError(`There is no such route: ${req.originalUrl}`, 400));
@@ -48,9 +37,9 @@ app.all("*", (req, res, next) => {
 // Global Error Handler Middleware
 app.use(globalError);
 
-//listen server
 const PORT = process.env.PORT || 8000;
 
+//listen server
 const server = app.listen(PORT, () => {
   console.log(`app running on this ${PORT}`);
 });

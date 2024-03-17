@@ -2,6 +2,10 @@ const express = require("express");
 
 const authServices = require("../services/authService");
 
+const router = express.Router();
+
+router.use(authServices.protect, authServices.allowedTo("student"));
+
 const { wishListValidator } = require("../utils/validators/wishListValidator");
 
 const {
@@ -10,12 +14,8 @@ const {
   getWishlist,
 } = require("../services/wishlistService");
 
-const router = express.Router();
-
-router.use(authServices.protect, authServices.allowedTo("user"));
-
-router.route("/").get(getWishlist).post(wishListValidator, addToWishlist);
-
+router.route("/").get(getWishlist);
+router.post("/:courseId", wishListValidator, addToWishlist);
 router.delete("/:courseId", wishListValidator, removeFromWishlist);
 
 module.exports = router;

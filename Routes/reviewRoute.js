@@ -30,7 +30,7 @@ router.use(authServices.protect, authServices.isActive);
 router
   .route("/")
   .post(
-    authServices.allowedTo("user"),
+    authServices.allowedTo("student"),
     setCourseId,
     createReviewValidator,
     createReview
@@ -38,9 +38,9 @@ router
 
 router
   .route("/:id")
-  .put(authServices.allowedTo("user"), updateReviewValidator, updateReview)
+  .put(authServices.allowedTo("student"), updateReviewValidator, updateReview)
   .delete(
-    authServices.allowedTo("user", "admin"),
+    authServices.allowedTo("student", "instructor"),
     deleteReviewValidator,
     deleteReview
   );

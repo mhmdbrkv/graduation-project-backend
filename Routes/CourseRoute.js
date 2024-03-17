@@ -1,20 +1,24 @@
 const express = require("express");
 
 const {
-  getCousreValidator,
   createCousreValidator,
+  getCousreValidator,
   updateCousreValidator,
   deleteCousreValidator,
 } = require("../utils/validators/courseValidator");
 
 const {
-  getCourses,
   createCourse,
+  getCourses,
   getCourse,
   deleteCourse,
   updateCourse,
   courseThumb,
   imageProcessing,
+  addSections,
+  addLectures,
+  removeSection,
+  removeLecture,
 } = require("../services/courseService");
 
 const reviewRoute = require("./reviewRoute");
@@ -31,16 +35,25 @@ router.get("/:id", getCousreValidator, getCourse);
 router.use(
   authServices.protect,
   authServices.isActive,
-  authServices.allowedTo("instructor", "admin")
+  authServices.allowedTo("instructor")
 );
 
-router
-  .route("/")
-  .post(courseThumb, imageProcessing, createCousreValidator, createCourse);
+router.post(
+  "/create-course",
+  courseThumb,
+  imageProcessing,
+  createCousreValidator,
+  createCourse
+);
 
 router
   .route("/:id")
   .put(courseThumb, imageProcessing, updateCousreValidator, updateCourse)
   .delete(deleteCousreValidator, deleteCourse);
+
+router.post("/add-sections", addSections);
+router.post("/add-lectures", addLectures);
+router.delete("/remove-section", removeSection);
+router.delete("/remove-lecture", removeLecture);
 
 module.exports = router;
