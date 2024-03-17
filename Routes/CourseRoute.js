@@ -15,10 +15,6 @@ const {
   updateCourse,
   courseThumb,
   imageProcessing,
-  addSections,
-  addLectures,
-  removeSection,
-  removeLecture,
 } = require("../services/courseService");
 
 const reviewRoute = require("./reviewRoute");
@@ -50,10 +46,5 @@ router
   .route("/:id")
   .put(courseThumb, imageProcessing, updateCousreValidator, updateCourse)
   .delete(deleteCousreValidator, deleteCourse);
-
-router.post("/add-sections", addSections);
-router.post("/add-lectures", addLectures);
-router.delete("/remove-section", removeSection);
-router.delete("/remove-lecture", removeLecture);
 
 module.exports = router;

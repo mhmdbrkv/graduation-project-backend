@@ -12,6 +12,9 @@ const calcCartTotalPrice = (cart) => {
   cart.totalPrice = totalItemsPrice;
 };
 
+// @desc    Add product to  cart
+// @route   POST /api/v1/cart
+// @access  Private/Student
 exports.addToCart = asyncHandler(async (req, res, next) => {
   const { courseId } = req.body;
   const course = await Course.findById(courseId);
@@ -46,6 +49,9 @@ exports.addToCart = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc    Get logged user cart
+// @route   GET /api/v1/cart
+// @access  Private/User
 exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
   const cart = await Cart.findOne({ user: req.user._id });
   if (!cart) throw new Error(`Cart is empty`);
@@ -58,6 +64,9 @@ exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
     .json({ success: true, items: cart.cartItems.length, data: cart });
 });
 
+// @desc    Remove specific cart item
+// @route   DELETE /api/v1/cart/:itemId
+// @access  Private/User
 exports.removeCartItem = asyncHandler(async (req, res, next) => {
   const cart = await Cart.findOneAndUpdate(
     { user: req.user._id },
@@ -75,6 +84,9 @@ exports.removeCartItem = asyncHandler(async (req, res, next) => {
     .json({ success: true, items: cart.cartItems.length, data: cart });
 });
 
+// @desc    Apply coupon on logged user cart
+// @route   PUT /api/v1/cart/apply-coupon
+// @access  Private/User
 exports.applyCoupon = asyncHandler(async (req, res, next) => {
   // 1) Get coupon based on coupon name
   const coupon = await Coupon.findOne({

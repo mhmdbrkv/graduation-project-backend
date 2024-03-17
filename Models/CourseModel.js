@@ -1,27 +1,6 @@
 const mongoose = require("mongoose");
 
-//create schema for course content
-const sectionSchema = new mongoose.Schema({
-  sectionName: {
-    type: String,
-    require: [true, "section's name required"],
-  },
-  lectures: [
-    {
-      lectureName: {
-        type: String,
-        require: [true, "lecture's name required"],
-      },
-
-      lectureUrl: {
-        type: String,
-        require: [true, "lecture's url required"],
-      },
-    },
-  ],
-});
-
-//create schema
+//create schema for courses and use the sectionSchema as a subdocument within it
 const cousreSchema = new mongoose.Schema(
   {
     title: {
@@ -110,8 +89,6 @@ const cousreSchema = new mongoose.Schema(
       type: String,
     },
 
-    sections: [sectionSchema],
-
     requirements: {
       type: [String],
       require: [true, "requirements required"],
@@ -133,6 +110,12 @@ const cousreSchema = new mongoose.Schema(
 // Virtual property for getting the reviews of the course with the response
 cousreSchema.virtual("reviews", {
   ref: "Review",
+  foreignField: "course",
+  localField: "_id",
+});
+
+cousreSchema.virtual("sections", {
+  ref: "Section",
   foreignField: "course",
   localField: "_id",
 });

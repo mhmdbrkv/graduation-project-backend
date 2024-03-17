@@ -7,6 +7,9 @@ const generateToken = require("../utils/generateToken");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../Models/userModel");
 
+// @desc    Signup
+// @route   POST /api/v1/auth/signup
+// @access  Public
 exports.signup = asyncHandler(async (req, res, next) => {
   // Create a new user
   const user = await User.create({
@@ -25,6 +28,9 @@ exports.signup = asyncHandler(async (req, res, next) => {
   res.status(201).json({ data: user, token });
 });
 
+// @desc    Login
+// @route   POST /api/v1/auth/login
+// @access  Public
 exports.login = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
@@ -38,6 +44,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: user, token });
 });
 
+// @desc   make sure the user is logged in
 exports.protect = asyncHandler(async (req, res, next) => {
   // 1) check if token exists in request header
   let token;
@@ -83,6 +90,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
+// @desc    make sure the user is active
 exports.isActive = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user._id);
 
@@ -92,6 +100,7 @@ exports.isActive = asyncHandler(async (req, res, next) => {
   next();
 });
 
+// @desc    Authorization (User Permissions)
 exports.allowedTo = (...roles) =>
   asyncHandler(async (req, res, next) => {
     if (!roles.includes(req.user.role))
@@ -100,6 +109,9 @@ exports.allowedTo = (...roles) =>
     next();
   });
 
+// @desc    Forgot password
+// @route   POST /api/v1/auth/forgot-password
+// @access  Protected
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   // 1) Check user's email
   const user = await User.findOne({ email: req.body.email });
@@ -134,6 +146,9 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   res.status(200).json(`Email sent successfully to ${user.email}`);
 });
 
+// @desc    Verify password reset code
+// @route   POST /api/v1/auth/verify-reset-code
+// @access  Protected
 exports.verifyResetCode = asyncHandler(async (req, res, next) => {
   const code = crypto
     .createHash("sha256")
@@ -153,6 +168,9 @@ exports.verifyResetCode = asyncHandler(async (req, res, next) => {
   res.status(200).json({ message: "Password reset code is verified" });
 });
 
+// @desc    Reset password
+// @route   POST /api/v1/auth/reset-password
+// @access  Protected
 exports.resetPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) throw new ApiError("No user found  with this email address.", 404);

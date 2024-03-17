@@ -97,11 +97,17 @@ exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
   res.status(200).json({ data: user });
 });
 
+// @desc    deActivate loggged user data
+// @route   PUT /api/v1/users/deActivate
+// @access  Private
 exports.deActivateLoggedUser = asyncHandler(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user._id, { isActive: false });
   res.status(204).send();
 });
 
+// @desc    activate loggged user data
+// @route   PUT /api/v1/users/activate
+// @access  Private
 exports.activateLoggedUser = asyncHandler(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user._id, { isActive: true });
   res.status(200).send();

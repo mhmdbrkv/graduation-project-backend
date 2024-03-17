@@ -1,4 +1,5 @@
 const courseRoute = require("./courseRoute");
+const sectionRoute = require("./sectionRoute");
 const categoryRoute = require("./categoryRoute");
 const subCategoryRoute = require("./subCategoryRoute");
 const userRoute = require("./userRoute");
@@ -12,6 +13,7 @@ const instructorRoute = require("./instructorRoute");
 
 const mountRoutes = (app) => {
   app.use("/api/v1/courses", courseRoute);
+  app.use("/api/v1/sections", sectionRoute);
   app.use("/api/v1/categories", categoryRoute);
   app.use("/api/v1/subcategories", subCategoryRoute);
   app.use("/api/v1/auth", authRoute);
