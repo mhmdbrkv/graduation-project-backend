@@ -23,8 +23,10 @@ const app = express();
 app.use(compression());
 app.use(cors());
 app.options("*", cors());
-app.use(express.json());
 app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "uploads")));
 
 if (process.env.NODE_ENV === "development") {

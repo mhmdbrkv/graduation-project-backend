@@ -35,20 +35,19 @@ router.use(
   authServices.allowedTo("instructor")
 );
 
-router
-  .route("/")
-  .post(
-    createCategoryValidator,
-    categoryImage,
-    uploadToCloudinry,
-    createCategory
-  );
+router.post(
+  "/",
+  categoryImage,
+  createCategoryValidator,
+  uploadToCloudinry,
+  createCategory
+);
 
 router
   .route("/:id")
   .put(
-    updateCategoryValidator,
     categoryImage,
+    updateCategoryValidator,
     uploadToCloudinry,
     updateCategory
   )
