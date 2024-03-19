@@ -7,7 +7,7 @@ const lectureSchema = new mongoose.Schema({
     require: [true, "lecture's name required"],
   },
 
-  lectureUrl: {
+  lecture: {
     type: String,
     require: [true, "lecture's url required"],
   },

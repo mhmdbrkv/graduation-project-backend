@@ -8,10 +8,12 @@ const {
 } = require("../utils/validators/sectionValidator");
 
 const {
-  addSections,
-  addLectures,
+  addSection,
+  addLecture,
   removeSection,
   removeLecture,
+  lectureVideo,
+  uploadToCloudinry,
 } = require("../services/sectionService");
 
 const authServices = require("../services/authService");
@@ -24,8 +26,14 @@ router.use(
   authServices.allowedTo("instructor")
 );
 
-router.post("/:courseId", addSectionValidator, addSections);
-router.post("/:sectionId/add-lectures", addlectureValidator, addLectures);
+router.post("/:courseId", addSectionValidator, addSection);
+router.post(
+  "/:sectionId/add-lectures",
+  addlectureValidator,
+  lectureVideo,
+  uploadToCloudinry,
+  addLecture
+);
 router.delete(
   "/remove-section/:sectionId",
   removeSectionValidator,

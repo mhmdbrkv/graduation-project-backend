@@ -85,7 +85,7 @@ const cousreSchema = new mongoose.Schema(
       require: [true, "Course price required"],
     },
 
-    thmubnail: {
+    thumbnail: {
       type: String,
     },
 
@@ -124,14 +124,6 @@ cousreSchema.virtual("sections", {
 cousreSchema.pre(/^find/, function (next) {
   this.populate({ path: "category", select: "name -_id" });
   next();
-});
-
-// return thmubnail url with the response
-cousreSchema.post("init", (doc) => {
-  if (doc.thmubnail) {
-    const thmubnailUrl = `${process.env.BASE_URL}/courses/${doc.thmubnail}`;
-    doc.thmubnail = thmubnailUrl;
-  }
 });
 
 //create Model

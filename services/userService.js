@@ -1,26 +1,25 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
-const sharp = require("sharp");
-const { v4: uuidv4 } = require("uuid");
-const { uploadSingleImage } = require("../Middlewares/uploadImagesMiddleware");
+const cloudinary = require("../utils/cloudinary");
+const { uploadOneImage } = require("../Middlewares/uploadFileMiddleware");
 const generateToken = require("../utils/generateToken");
 const ApiError = require("../utils/apiError");
 const User = require("../Models/userModel");
 
-exports.userProfImg = uploadSingleImage("profileImage");
+// multer diskStorage
+exports.userProfileImage = uploadOneImage("profileImage", "uploads/users");
 
-exports.imageProcessing = asyncHandler(async (req, res, next) => {
+// set cloudinry url into req.body.image
+exports.uploadToCloudinry = asyncHandler(async (req, res, next) => {
   if (req.file) {
-    const filename = `user-${uuidv4()}-${Date.now()}.jpeg`;
-    await sharp(req.file.buffer)
-      .resize(600, 600)
-      .toFormat("jpeg")
-      .jpeg({ quality: 90 })
-      .toFile(`uploads/users/${filename}`);
-
-    req.body.profileImage = filename;
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      width: 600,
+      height: 600,
+      crop: "fill",
+      folder: "users",
+    });
+    req.body.profileImage = result.secure_url;
   }
-
   next();
 });
 
@@ -28,7 +27,10 @@ exports.imageProcessing = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/users/get-me
 // @access  Private
 exports.getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).populate("myCourses");
+  const user = await User.findById(req.user._id).populate({
+    path: "myCourses",
+    select: "title subtitle price enrolled ratingsNumber avgRatings",
+  });
 
   if (!user) {
     throw new ApiError(`No document with the id of ${req.params.id}`, 404);
@@ -50,8 +52,6 @@ exports.getUser = asyncHandler(async (req, res) => {
   }
 
   data.user = user;
-
-  console.log(data);
 
   res.status(200).json(data);
 });

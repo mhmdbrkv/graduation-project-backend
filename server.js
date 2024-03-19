@@ -2,6 +2,8 @@ const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
 const dotenv = require("dotenv");
+const cors = require("cors");
+const compression = require("compression");
 
 dotenv.config({ path: "config.env" });
 
@@ -16,11 +18,14 @@ dbConnection();
 
 //express app
 const app = express();
-app.use(express.static(path.join(__dirname, "uploads")));
 
 //middlewares
+app.use(compression());
+app.use(cors());
+app.options("*", cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(express.static(path.join(__dirname, "uploads")));
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

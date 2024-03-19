@@ -1,21 +1,24 @@
 const asyncHandler = require("express-async-handler");
-const sharp = require("sharp");
-const { v4: uuidv4 } = require("uuid");
-const { uploadSingleImage } = require("../Middlewares/uploadImagesMiddleware");
+// const sharp = require("sharp");
+// const { v4: uuidv4 } = require("uuid");
+const cloudinary = require("../utils/cloudinary");
+const { uploadOneImage } = require("../Middlewares/uploadFileMiddleware");
 const handler = require("./handlersFactory");
 const Category = require("../Models/categoryModel");
 
-exports.categoryImage = uploadSingleImage("image");
+// multer diskStorage
+exports.categoryImage = uploadOneImage("image", "uploads/categories");
 
-exports.imageProcessing = asyncHandler(async (req, res, next) => {
+// set cloudinry url into req.body.image
+exports.uploadToCloudinry = asyncHandler(async (req, res, next) => {
   if (req.file) {
-    const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
-    await sharp(req.file.buffer)
-      .resize(600, 600)
-      .toFormat("jpeg")
-      .jpeg({ quality: 90 })
-      .toFile(`uploads/categories/${filename}`);
-    req.body.image = filename;
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      width: 600,
+      height: 600,
+      crop: "fill",
+      folder: "categories",
+    });
+    req.body.image = result.secure_url;
   }
   next();
 });

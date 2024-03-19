@@ -1,23 +1,24 @@
 const asyncHandler = require("express-async-handler");
-const sharp = require("sharp");
-const { v4: uuidv4 } = require("uuid");
-const { uploadSingleImage } = require("../Middlewares/uploadImagesMiddleware");
+const cloudinary = require("../utils/cloudinary");
+const { uploadOneImage } = require("../Middlewares/uploadFileMiddleware");
 const ApiError = require("../utils/apiError");
 const handler = require("./handlersFactory");
 const Course = require("../Models/courseModel");
 const User = require("../Models/userModel");
 
-exports.courseThumb = uploadSingleImage("thmubnail");
+// multer diskStorage
+exports.courseThumbnail = uploadOneImage("thumbnail", "uploads/courses");
 
-exports.imageProcessing = asyncHandler(async (req, res, next) => {
+// set cloudinry url into req.body.image
+exports.uploadToCloudinry = asyncHandler(async (req, res, next) => {
   if (req.file) {
-    const filename = `course-${uuidv4()}-${Date.now()}.jpeg`;
-    await sharp(req.file.buffer)
-      .resize(600, 600)
-      .toFormat("jpeg")
-      .jpeg({ quality: 90 })
-      .toFile(`uploads/courses/${filename}`);
-    req.body.thmubnail = filename;
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      width: 600,
+      height: 600,
+      crop: "fill",
+      folder: "courses",
+    });
+    req.body.thumbnail = result.secure_url;
   }
   next();
 });

@@ -82,7 +82,7 @@ exports.updateLoggeedUserDataValidator = [
     .notEmpty()
     .withMessage("Password required to confirm the updates ")
     .isLength({ min: 6 })
-    .withMessage("user lastname length must be at least 6 characters"),
+    .withMessage("user password length must be at least 6 characters"),
 
   validatorMiddleware,
 ];

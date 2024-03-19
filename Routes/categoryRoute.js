@@ -14,7 +14,7 @@ const {
   updateCategory,
   deleteCategory,
   categoryImage,
-  imageProcessing,
+  uploadToCloudinry,
 } = require("../services/categoryService");
 
 const authServices = require("../services/authService");
@@ -38,15 +38,20 @@ router.use(
 router
   .route("/")
   .post(
-    categoryImage,
-    imageProcessing,
     createCategoryValidator,
+    categoryImage,
+    uploadToCloudinry,
     createCategory
   );
 
 router
   .route("/:id")
-  .put(categoryImage, imageProcessing, updateCategoryValidator, updateCategory)
+  .put(
+    updateCategoryValidator,
+    categoryImage,
+    uploadToCloudinry,
+    updateCategory
+  )
   .delete(deleteCategoryValidator, deleteCategory);
 
 module.exports = router;

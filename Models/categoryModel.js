@@ -10,7 +10,6 @@ const categorySchema = new mongoose.Schema(
       minlength: [3, "Too short category name"],
       maxlength: [32, "Too long category name"],
     },
-    // A and B => shoping.com/a-and-b
     slug: {
       type: String,
       lowercase: true,
@@ -20,15 +19,4 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// 2- Create model
-const Category = mongoose.model("Category", categorySchema);
-
-// // mongoose query middleware: return image url with the response
-// categorySchema.post("init", (doc) => {
-//   if (doc.image) {
-//     const imageUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
-//     doc.image = imageUrl;
-//   }
-// });
-
-module.exports = Category;
+module.exports = mongoose.model("Category", categorySchema);

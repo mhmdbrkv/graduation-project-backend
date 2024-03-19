@@ -1,10 +1,27 @@
 const asyncHandler = require("express-async-handler");
+const cloudinary = require("../utils/cloudinary");
+const { uploadOneVideo } = require("../Middlewares/uploadFileMiddleware");
 const Section = require("../Models/sectionModel");
+
+// multer diskStorage
+exports.lectureVideo = uploadOneVideo("lecture", "uploads/videos");
+
+// set cloudinry url into req.body.image
+exports.uploadToCloudinry = asyncHandler(async (req, res, next) => {
+  if (req.file) {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      resource_type: "video",
+      folder: "lectures",
+    });
+    req.body.lecture = result.secure_url;
+  }
+  next();
+});
 
 // @desc Add sections into course by courseId
 // @route   POST /api/v1/sections/:courseId
 // @access  Private/Instructor
-exports.addSections = asyncHandler(async (req, res, next) => {
+exports.addSection = asyncHandler(async (req, res, next) => {
   const section = await Section.create({
     course: req.params.courseId,
     sectionName: req.body.sectionName,
@@ -21,12 +38,15 @@ exports.addSections = asyncHandler(async (req, res, next) => {
 // @desc Add lecture into section by sectionId
 // @route   POST /api/v1/sections/:sectionId/add-lectures
 // @access  Private/Instructor
-exports.addLectures = asyncHandler(async (req, res, next) => {
+exports.addLecture = asyncHandler(async (req, res, next) => {
   const section = await Section.findOneAndUpdate(
     { _id: req.params.sectionId },
     {
-      $push: {
-        lectures: req.body.lectures,
+      $addToSet: {
+        lectures: {
+          lectureName: req.body.lectureName,
+          lecture: req.body.lecture,
+        },
       },
     },
     { new: true }

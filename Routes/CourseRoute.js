@@ -13,8 +13,8 @@ const {
   getCourse,
   deleteCourse,
   updateCourse,
-  courseThumb,
-  imageProcessing,
+  courseThumbnail,
+  uploadToCloudinry,
 } = require("../services/courseService");
 
 const reviewRoute = require("./reviewRoute");
@@ -36,15 +36,15 @@ router.use(
 
 router.post(
   "/create-course",
-  courseThumb,
-  imageProcessing,
   createCousreValidator,
+  courseThumbnail,
+  uploadToCloudinry,
   createCourse
 );
 
 router
   .route("/:id")
-  .put(courseThumb, imageProcessing, updateCousreValidator, updateCourse)
+  .put(updateCousreValidator, courseThumbnail, uploadToCloudinry, updateCourse)
   .delete(deleteCousreValidator, deleteCourse);
 
 module.exports = router;

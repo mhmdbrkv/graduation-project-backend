@@ -7,8 +7,8 @@ const {
 
 const {
   getUser,
-  userProfImg,
-  imageProcessing,
+  userProfileImage,
+  uploadToCloudinry,
   changeLoggedUserPassword,
   updateLoggedUserData,
   deActivateLoggedUser,
@@ -34,9 +34,9 @@ router.put(
 );
 router.put(
   "/update-my-data",
-  userProfImg,
-  imageProcessing,
   updateLoggeedUserDataValidator,
+  userProfileImage,
+  uploadToCloudinry,
   updateLoggedUserData
 );
 
