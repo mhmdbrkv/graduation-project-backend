@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema(
       unique: [true, "User email must be unique"],
     },
     profileImage: {
-      type: String,
+      url: String,
+      public_id: String,
     },
     password: {
       type: String,

@@ -18,7 +18,9 @@ exports.createCategoryValidator = [
     .withMessage("Name length must be between 3 and 32 characters")
     .custom(async (val, { req }) => {
       const category = await Category.findOne({ name: val });
-      if (category) throw new Error("Category already exists!");
+      if (category) {
+        throw new Error("Category already exists!");
+      }
       req.body.slug = slugify(val);
       return true;
     }),

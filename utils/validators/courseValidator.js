@@ -1,6 +1,7 @@
 const slugify = require("slugify");
 const { check } = require("express-validator");
 const validatorMiddleware = require("../../Middlewares/validationMiddleware");
+const Course = require("../../Models/courseModel");
 const Category = require("../../Models/categoryModel");
 const SubCategory = require("../../Models/subCategoryModel");
 const User = require("../../Models/userModel");
@@ -18,7 +19,11 @@ exports.createCousreValidator = [
     .withMessage("Invalid course title format")
     .isLength({ min: 12, max: 60 })
     .withMessage("course title length must be between 12 and 150 words")
-    .custom((val, { req }) => {
+    .custom(async (val, { req }) => {
+      const course = await Course.findOne({ title: val });
+      if (course) {
+        throw new Error(`Course ${course.title} has already been created`);
+      }
       req.body.slug = slugify(val);
       return true;
     }),
@@ -87,11 +92,11 @@ exports.createCousreValidator = [
     .isMongoId()
     .withMessage("Invalid instructor id format")
     .custom(async (value, { req }) => {
-      const roles = ["instructor", "admin"];
+      const roles = ["instructor"];
       const user = await User.findById(value);
       if (!user || !roles.includes(user.role)) {
         throw new Error(
-          "The inserted id of the instructor field does not belong to instructor or admin"
+          "The inserted id of the instructor field does not belong to instructor"
         );
       }
     }),

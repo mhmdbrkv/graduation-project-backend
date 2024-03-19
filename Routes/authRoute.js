@@ -11,11 +11,19 @@ const {
   forgotPassword,
   verifyResetCode,
   resetPassword,
+  uploadToCloudinry,
+  userProfileImage,
 } = require("../services/authService");
 
 const router = express.Router();
 
-router.post("/signup", signupValidator, signup);
+router.post(
+  "/signup",
+  signupValidator,
+  userProfileImage,
+  uploadToCloudinry,
+  signup
+);
 router.post("/login", loginValidator, login);
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-reset-code", verifyResetCode);

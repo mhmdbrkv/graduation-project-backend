@@ -17,11 +17,11 @@ const {
   uploadToCloudinry,
 } = require("../services/categoryService");
 
+const subCategoryRoute = require("./subCategoryRoute");
+
 const authServices = require("../services/authService");
 
 const router = express.Router();
-
-const subCategoryRoute = require("./subCategoryRoute");
 
 //Nested Route
 router.use("/:categoryId/subcategories", subCategoryRoute);
@@ -31,14 +31,14 @@ router.get("/:id", getCategoryValidator, getCategory);
 
 router.use(
   authServices.protect,
-  authServices.isActive,
-  authServices.allowedTo("instructor")
+  authServices.allowedTo("instructor"),
+  authServices.isActive
 );
 
 router.post(
   "/",
-  categoryImage,
   createCategoryValidator,
+  categoryImage,
   uploadToCloudinry,
   createCategory
 );
@@ -46,8 +46,8 @@ router.post(
 router
   .route("/:id")
   .put(
-    categoryImage,
     updateCategoryValidator,
+    categoryImage,
     uploadToCloudinry,
     updateCategory
   )

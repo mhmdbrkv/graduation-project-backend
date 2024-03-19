@@ -1,24 +1,27 @@
+const fs = require("fs");
 const asyncHandler = require("express-async-handler");
-// const sharp = require("sharp");
-// const { v4: uuidv4 } = require("uuid");
-const cloudinary = require("../utils/cloudinary");
+const { cloudinaryUploadImage } = require("../utils/cloudinary");
 const { uploadOneImage } = require("../Middlewares/uploadFileMiddleware");
 const handler = require("./handlersFactory");
 const Category = require("../Models/categoryModel");
 
 // multer diskStorage
-exports.categoryImage = uploadOneImage("image", "uploads/categories");
+exports.categoryImage = uploadOneImage("image");
 
-// set cloudinry url into req.body.image
+// set cloudinry url into req.body
 exports.uploadToCloudinry = asyncHandler(async (req, res, next) => {
   if (req.file) {
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      width: 600,
-      height: 600,
-      crop: "fill",
-      folder: "categories",
-    });
-    req.body.image = result.secure_url;
+    // 1) upload to cloudinry
+    const result = await cloudinaryUploadImage(req.file.path, "categories");
+
+    // 2) set cloudinry url and public id into req body
+    req.body.image = {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
+
+    // 3) delete file from server
+    fs.unlinkSync(req.file.path);
   }
   next();
 });

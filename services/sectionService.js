@@ -1,20 +1,22 @@
+const fs = require("fs");
 const asyncHandler = require("express-async-handler");
-const cloudinary = require("../utils/cloudinary");
+const { cloudinaryUploadVideo } = require("../utils/cloudinary");
 const { uploadOneVideo } = require("../Middlewares/uploadFileMiddleware");
 const Section = require("../Models/sectionModel");
 
 // multer diskStorage
-exports.lectureVideo = uploadOneVideo("lecture", "uploads/videos");
+exports.lectureVideo = uploadOneVideo("lecture");
 
-// set cloudinry url into req.body.image
+// set cloudinry url into req.body
 exports.uploadToCloudinry = asyncHandler(async (req, res, next) => {
   if (req.file) {
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "video",
-      folder: "lectures",
-    });
-    req.body.lecture = result.secure_url;
+    const result = await cloudinaryUploadVideo(req.file.path, "videos");
+    req.body.url = result.secure_url;
+    req.body.public_id = result.public_id;
+    // delete file from server
+    fs.unlinkSync(req.file.path);
   }
+
   next();
 });
 
@@ -44,8 +46,9 @@ exports.addLecture = asyncHandler(async (req, res, next) => {
     {
       $addToSet: {
         lectures: {
-          lectureName: req.body.lectureName,
-          lecture: req.body.lecture,
+          name: req.body.name,
+          url: req.body.url,
+          public_id: req.body.public_id,
         },
       },
     },

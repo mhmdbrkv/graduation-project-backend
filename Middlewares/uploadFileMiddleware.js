@@ -20,10 +20,10 @@ exports.uploadSingleImage = (fieldName) => {
 };
 
 // 2) DiskStorage one image
-exports.uploadOneImage = (fieldName, path) => {
+exports.uploadOneImage = (fieldName) => {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, path);
+      cb(null, "uploads");
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = `${Date.now()}-${uuidv4()}`;
@@ -48,10 +48,10 @@ exports.uploadOneImage = (fieldName, path) => {
 };
 
 // DiskStorage one video
-exports.uploadOneVideo = (fieldName, path) => {
+exports.uploadOneVideo = (fieldName) => {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, path);
+      cb(null, "uploads");
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = `${Date.now()}-${uuidv4()}`;

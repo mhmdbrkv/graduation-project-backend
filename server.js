@@ -1,16 +1,15 @@
+const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
-const path = require("path");
-const dotenv = require("dotenv");
 const cors = require("cors");
 const compression = require("compression");
+const dotenv = require("dotenv");
 
 dotenv.config({ path: "config.env" });
 
 const ApiError = require("./utils/apiError");
 const globalError = require("./Middlewares/errorMiddleware");
 const dbConnection = require("./config/database");
-
 const mountRoutes = require("./Routes");
 
 //database connection
@@ -20,13 +19,13 @@ dbConnection();
 const app = express();
 
 //middlewares
-app.use(compression());
+app.use(morgan("dev"));
 app.use(cors());
 app.options("*", cors());
-app.use(morgan("dev"));
-app.use(express.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(compression());
+
 app.use(express.static(path.join(__dirname, "uploads")));
 
 if (process.env.NODE_ENV === "development") {

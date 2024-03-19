@@ -34,8 +34,8 @@ router.put(
 );
 router.put(
   "/update-my-data",
-  updateLoggeedUserDataValidator,
   userProfileImage,
+  updateLoggeedUserDataValidator,
   uploadToCloudinry,
   updateLoggedUserData
 );

@@ -1,11 +1,35 @@
+const fs = require("fs");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
+const { cloudinaryUploadImage } = require("../utils/cloudinary");
+const { uploadOneImage } = require("../Middlewares/uploadFileMiddleware");
 const ApiError = require("../utils/apiError");
 const generateToken = require("../utils/generateToken");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../Models/userModel");
+
+// multer diskStorage
+exports.userProfileImage = uploadOneImage("profileImage");
+
+// set cloudinry url into req.body
+exports.uploadToCloudinry = asyncHandler(async (req, res, next) => {
+  if (req.file) {
+    // 1) upload to cloudinry
+    const result = await cloudinaryUploadImage(req.file.path, "users");
+
+    // 2) set cloudinry url and public id into req body
+    req.body.profileImage = {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
+
+    // 3) delete file from server
+    fs.unlinkSync(req.file.path);
+  }
+  next();
+});
 
 // @desc    Signup
 // @route   POST /api/v1/auth/signup

@@ -2,15 +2,13 @@ const mongoose = require("mongoose");
 
 //create schema for lecture
 const lectureSchema = new mongoose.Schema({
-  lectureName: {
+  name: {
     type: String,
     require: [true, "lecture's name required"],
   },
 
-  lecture: {
-    type: String,
-    require: [true, "lecture's url required"],
-  },
+  url: String,
+  public_id: String,
 });
 
 //create schema for course content

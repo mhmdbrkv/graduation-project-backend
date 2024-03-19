@@ -1,5 +1,6 @@
+const fs = require("fs");
 const asyncHandler = require("express-async-handler");
-const cloudinary = require("../utils/cloudinary");
+const { cloudinaryUploadImage } = require("../utils/cloudinary");
 const { uploadOneImage } = require("../Middlewares/uploadFileMiddleware");
 const ApiError = require("../utils/apiError");
 const handler = require("./handlersFactory");
@@ -7,18 +8,20 @@ const Course = require("../Models/courseModel");
 const User = require("../Models/userModel");
 
 // multer diskStorage
-exports.courseThumbnail = uploadOneImage("thumbnail", "uploads/courses");
+exports.courseThumbnail = uploadOneImage("thumbnail");
 
 // set cloudinry url into req.body.image
 exports.uploadToCloudinry = asyncHandler(async (req, res, next) => {
   if (req.file) {
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      width: 600,
-      height: 600,
-      crop: "fill",
-      folder: "courses",
-    });
-    req.body.thumbnail = result.secure_url;
+    const result = await cloudinaryUploadImage(req.file.path, "courses");
+
+    req.body.thumbnail = {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
+
+    // delete file from server
+    fs.unlinkSync(req.file.path);
   }
   next();
 });
@@ -42,7 +45,6 @@ exports.createCourse = asyncHandler(async (req, res) => {
     { _id: newCourse.instructor },
     { $addToSet: { myCourses: newCourse._id } }
   );
-
   res.status(201).json({ data: newCourse });
 });
 

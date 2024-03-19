@@ -86,7 +86,8 @@ const cousreSchema = new mongoose.Schema(
     },
 
     thumbnail: {
-      type: String,
+      url: String,
+      public_id: String,
     },
 
     requirements: {
