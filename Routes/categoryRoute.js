@@ -18,6 +18,7 @@ const {
 } = require("../services/categoryService");
 
 const subCategoryRoute = require("./subCategoryRoute");
+const courseRoute = require("./courseRoute");
 
 const authServices = require("../services/authService");
 
@@ -25,6 +26,7 @@ const router = express.Router();
 
 //Nested Route
 router.use("/:categoryId/subcategories", subCategoryRoute);
+router.use("/:categoryId/courses", courseRoute);
 
 router.get("/", getCategories);
 router.get("/:id", getCategoryValidator, getCategory);

@@ -17,9 +17,14 @@ const {
   deleteSubCategoryValidator,
 } = require("../utils/validators/subCategoryValidator");
 
+const courseRoute = require("./courseRoute");
+
 const authServices = require("../services/authService");
 
 const router = express.Router({ mergeParams: true });
+
+//Nested Route
+router.use("/:subCategoryId/courses", courseRoute);
 
 router.get("/", filter, getSubCategories);
 router.get("/:id", getSubCategoryValidator, getSubCategory);

@@ -123,7 +123,7 @@ cousreSchema.virtual("sections", {
 
 // mongoose query middleware for population
 cousreSchema.pre(/^find/, function (next) {
-  this.populate({ path: "category", select: "name -_id" });
+  this.populate({ path: "category", select: "name" });
   next();
 });
 

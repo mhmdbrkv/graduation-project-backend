@@ -1,6 +1,7 @@
 const slugify = require("slugify");
 const { check } = require("express-validator");
 const validatorMiddleware = require("../../Middlewares/validationMiddleware");
+const Category = require("../../Models/categoryModel");
 
 exports.getSubCategoryValidator = [
   check("id").isMongoId().withMessage("invalid category id format"),
@@ -24,7 +25,13 @@ exports.createSubCategoryValidator = [
     .notEmpty()
     .withMessage("Category id Required")
     .isMongoId()
-    .withMessage("Invalid Category id format"),
+    .withMessage("Invalid Category id format")
+    .custom(async (val, { req }) => {
+      const isExist = await Category.findById(val);
+      if (!isExist) {
+        throw new Error(`This category with id:${val} does not exist!`);
+      }
+    }),
 
   validatorMiddleware,
 ];
@@ -40,7 +47,16 @@ exports.updateSubCategoryValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
-
+  check("category")
+    .optional()
+    .isMongoId()
+    .withMessage("Invalid Category id format")
+    .custom(async (val, { req }) => {
+      const isExist = await Category.findById(val);
+      if (!isExist) {
+        throw new Error(`This category with id:${val} does not exist!`);
+      }
+    }),
   validatorMiddleware,
 ];
 

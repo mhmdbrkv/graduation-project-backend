@@ -48,9 +48,6 @@ exports.createCousreValidator = [
 
   check("subCategories")
     .optional()
-    .notEmpty()
-    .withMessage("subCategory id Requivalid subCategory id format")
-
     .custom(async (IDs) => {
       const result = await SubCategory.find({
         _id: { $exists: true, $in: IDs },
@@ -140,20 +137,59 @@ exports.updateCousreValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
+  check("instructor")
+    .optional()
+    .isMongoId()
+    .withMessage("Invalid instructor id format")
+    .custom(async (value, { req }) => {
+      const roles = ["instructor"];
+      const user = await User.findById(value);
+      if (!user || !roles.includes(user.role)) {
+        throw new Error(
+          "The inserted id of the instructor field does not belong to instructor"
+        );
+      }
+    }),
+  check("category")
+    .optional()
+    .isMongoId()
+    .withMessage("Invalid category id format")
+    .custom(async (value) => {
+      const categoryExist = await Category.findById(value);
+      if (!categoryExist)
+        throw new Error(`This category id: ${value} does not exist! `);
+    }),
+
+  check("subCategories")
+    .optional()
+    .custom(async (value, { req }) => {
+      const course = await Course.findById(req.params.id);
+      const categoryId = course.category._id;
+
+      const result = await SubCategory.find({
+        category: categoryId,
+      });
+
+      const subCategoriesDB = [];
+
+      result.forEach((ele) => {
+        subCategoriesDB.push(ele._id.toString());
+      });
+
+      value.forEach((e) => {
+        if (!subCategoriesDB.includes(e)) {
+          throw new Error(
+            `The selected sub-category with id: ${e} do not belong to this main category!`
+          );
+        }
+      });
+    }),
+
   check("price")
     .optional()
-    .notEmpty()
-    .withMessage("price required")
     .isNumeric()
     .withMessage("invalid price format")
     .toFloat(),
-
-  check("sections")
-    .optional()
-    .notEmpty()
-    .withMessage("sections required")
-    .isArray()
-    .withMessage("Course sections required as array of objects"),
 
   validatorMiddleware,
 ];

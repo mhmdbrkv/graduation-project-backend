@@ -26,6 +26,29 @@ exports.uploadToCloudinry = asyncHandler(async (req, res, next) => {
   next();
 });
 
+// Nested post route
+exports.postFilter = async (req, res, next) => {
+  if (req.body.subCategory) req.body.subCategories = [];
+  req.body.subCategories.push(req.body.subCategory);
+
+  next();
+};
+
+// Nested get route
+exports.getFilter = async (req, res, next) => {
+  let filter = {};
+
+  // get all courses of a specific category
+  if (req.params.categoryId) filter = { category: req.params.categoryId };
+
+  // get all courses of a specific sub category
+  if (req.params.subCategoryId)
+    filter = { subCategories: { $in: req.params.subCategoryId } };
+
+  req.filter = filter;
+  next();
+};
+
 // @desc    Get list of courses
 // @route   GET /api/v1/courses
 // @access  Public
